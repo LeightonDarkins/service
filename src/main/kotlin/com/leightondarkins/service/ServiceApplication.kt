@@ -1,6 +1,5 @@
 package com.leightondarkins.service
 
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
@@ -12,10 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 class ServiceApplication
 
 fun main(args: Array<String>) {
-    Database.connect("jdbc:postgresql://localhost:5433/trackerdb",
-            driver = "org.postgresql.Driver",
-            user = "trackeruser",
-            password = "trackeruserpassword")
+    DatabaseConnector.connect()
 
     transaction {
         addLogger(StdOutSqlLogger)
