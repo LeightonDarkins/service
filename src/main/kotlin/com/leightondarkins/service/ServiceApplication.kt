@@ -6,12 +6,17 @@ import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
+@EnableConfigurationProperties(ServiceProperties::class)
 class ServiceApplication
 
 fun main(args: Array<String>) {
-    DatabaseConnector.connect()
+    val appContext = SpringApplication.run(ServiceApplication::class.java, *args)
+    val config = appContext.getBean(ServiceProperties::class.java)
+
+    DatabaseConnector(config.dbHost, config.dbPort).connect()
 
     transaction {
         addLogger(StdOutSqlLogger)
@@ -19,6 +24,6 @@ fun main(args: Array<String>) {
         SchemaUtils.create(Transactions)
     }
 
-    SpringApplication.run(ServiceApplication::class.java, *args)
+    println("Running Service In Environment: ${config.environment}")
 }
 

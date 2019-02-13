@@ -15,13 +15,14 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 
 @RestController
-class GreetingController {
+class GreetingController(private val properties: ServiceProperties) {
     private val logger = LogManager.getLogger("GreetingController")
 
     val counter = AtomicLong()
 
     @GetMapping("/greeting")
     fun greeting(@RequestParam(value = "name", defaultValue = "World!") name: String): Greeting {
+        logger.info("ENV: ${properties.environment}")
         logger.info("Sending a greeting")
 
         val test = Transaction(UUID.randomUUID(), 10010)
