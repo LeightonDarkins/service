@@ -25,10 +25,6 @@ class GreetingController(private val properties: ServiceProperties) {
         logger.info("ENV: ${properties.environment}")
         logger.info("Sending a greeting")
 
-        val test = Transaction(UUID.randomUUID(), 10010)
-
-        logger.info(test)
-
         return Greeting(counter.incrementAndGet(), "Hello, $name")
     }
 }

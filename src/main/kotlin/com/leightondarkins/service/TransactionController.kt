@@ -18,7 +18,10 @@ class TransactionController {
         transaction {
             addLogger(StdOutSqlLogger)
 
-            TransactionDAO.new { amount = body.amount }
+            TransactionDAO.new {
+                amount = body.amount
+                type = body.type.toString()
+            }
         }
     }
 
@@ -32,7 +35,7 @@ class TransactionController {
             TransactionDAO.all().toList()
         }
 
-        return transactionDAOs.map { t -> Transaction(t.id.value, t.amount) }
+        return transactionDAOs.map { t -> Transaction(t.id.value, t.amount, Type.valueOf(t.type)) }
     }
 
     @GetMapping("/transaction/{id}")
@@ -45,16 +48,18 @@ class TransactionController {
             TransactionDAO[id]
         }
 
-        return Transaction(result.id.value, result.amount)
+        return Transaction(result.id.value, result.amount, Type.valueOf(result.type))
     }
 }
 
 object Transactions: UUIDTable() {
     val amount: Column<Long> = long("amount")
+    val type: Column<String> = varchar("type", 50)
 }
 
 class TransactionDAO(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<TransactionDAO>(Transactions)
 
     var amount by Transactions.amount
+    var type by Transactions.type
 }

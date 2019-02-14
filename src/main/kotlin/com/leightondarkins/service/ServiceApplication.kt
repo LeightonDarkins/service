@@ -1,5 +1,6 @@
 package com.leightondarkins.service
 
+import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
@@ -16,13 +17,9 @@ fun main(args: Array<String>) {
     val appContext = SpringApplication.run(ServiceApplication::class.java, *args)
     val config = appContext.getBean(ServiceProperties::class.java)
 
-    DatabaseConnector(config.dbHost, config.dbPort).connect()
-
-    transaction {
-        addLogger(StdOutSqlLogger)
-
-        SchemaUtils.create(Transactions)
-    }
+    val dbConnector = DatabaseConnector(config.dbHost, config.dbPort)
+    dbConnector.migrate()
+    dbConnector.connect()
 
     println("Running Service In Environment: ${config.environment}")
 }

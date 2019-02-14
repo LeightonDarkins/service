@@ -1,3 +1,7 @@
 package com.leightondarkins.service
 
-enum class TransactionType { INCOME, EXPENSE }
+import java.util.*
+
+enum class Type { INCOME, EXPENSE }
+
+class TransactionType(val id: UUID, val type: Type)
